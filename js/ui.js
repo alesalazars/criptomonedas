@@ -48,6 +48,12 @@ class Interfaz{
   // Imprime el resultado de la cotizacion
   mostrarResultado(resultado, moneda, crypto){
 
+    // en caso de existir un resultado anterior, ocultarlo
+    const resultadoAnterior = document.querySelector('#resultado > div');
+    if(resultadoAnterior){
+      resultadoAnterior.remove();
+    }
+
     const datosMoneda = resultado[crypto][moneda];
 
     console.log(datosMoneda)
@@ -55,7 +61,7 @@ class Interfaz{
     // recortar digitos de precio
     let precio = datosMoneda.PRICE.toFixed(2),
         porcentaje = datosMoneda.CHANGEPCTDAY.toFixed(2),
-        actualizado = new Date(datosMoneda.LASTUPDATE * 1000).toLocaleDateString('es-CL');
+        actualizado = new Date(datosMoneda.LASTUPDATE * 1000).toLocaleDateString('es-CL'); // --> el valor de LASTUPDATE es '1592710799', con new Date podemos convertir ese time stamp en un formato legible, y con el segundo metodo adaptarlo a un formato local, en este caso fecha de Chile.
 
     //construir el template
     let templateHTML = `
@@ -69,8 +75,22 @@ class Interfaz{
       </div>
     `;
 
-    // insertar el resultado
-    document.querySelector('#resultado').innerHTML = templateHTML;
+    this.mostrarOcultarSpinner('block');
+
+    setTimeout(() => {
+      // insertar el resultado
+      document.querySelector('#resultado').innerHTML = templateHTML;
+
+      // ocultar el spinner
+      this.mostrarOcultarSpinner('none');
+    }, 3000);
+
+  }
+
+  //mostrar spinner de carga al enviar la cotizacion
+  mostrarOcultarSpinner(vista){
+    const spinner = document.querySelector('.contenido-spinner');
+    spinner.style.display = vista;
   }
 
 }
